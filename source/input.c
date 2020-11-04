@@ -277,10 +277,10 @@ int input_init(
    */
 
   char * const target_namestrings[] = {"100*theta_s","Omega_dcdmdr","omega_dcdmdr",
-                                       "Omega_scf","Omega_ini_dcdm","omega_ini_dcdm","sigma8"};
+                                       "Omega_scf","Omega_tach_insq","Omega_ini_dcdm","omega_ini_dcdm","sigma8"};
   char * const unknown_namestrings[] = {"h","Omega_ini_dcdm","Omega_ini_dcdm",
-                                        "scf_shooting_parameter","Omega_dcdmdr","omega_dcdmdr","A_s"};
-  enum computation_stage target_cs[] = {cs_thermodynamics, cs_background, cs_background,
+                                        "scf_shooting_parameter","tach_insq_shooting_parameter","Omega_dcdmdr","omega_dcdmdr","A_s"};
+  enum computation_stage target_cs[] = {cs_thermodynamics, cs_background, cs_background,cs_background,
                                         cs_background, cs_background, cs_background, cs_nonlinear};
 
   int input_verbose = 0, int1, aux_flag, shooting_failed=_FALSE_;
@@ -567,7 +567,7 @@ int input_init(
                errmsg,
                errmsg);
   }
-
+fprintf(stdout,"ini field is %lf\n",pba->phi_ini_tach_insq);
   return _SUCCESS_;
 
 }
@@ -628,11 +628,12 @@ int input_read_parameters(
 
   /** - define local variables */
 
-  int flag1,flag2,flag3;
-  double param1,param2,param3;
+  int flag1,flag2,flag3,flag4;
+  double param1,param2,param3,param4;
   int N_ncdm=0,n,entries_read;
   int int1,fileentries;
   double scf_lambda;
+  double tach_insq_n;
   double fnu_factor;
   double * pointer1;
   char string1[_ARGUMENT_LENGTH_MAX_];
@@ -1270,8 +1271,11 @@ int input_read_parameters(
   class_call(parser_read_double(pfc,"Omega_scf",&param3,&flag3,errmsg),
              errmsg,
              errmsg);
+  class_call(parser_read_double(pfc,"Omega_tach_insq",&param4,&flag4,errmsg),
+             errmsg,
+             errmsg);
 
-  class_test((flag1 == _TRUE_) && (flag2 == _TRUE_) && ((flag3 == _FALSE_) || (param3 >= 0.)),
+  class_test((flag1 == _TRUE_) && (flag2 == _TRUE_) && ((flag3 == _FALSE_) || (param3 >= 0.)) && ((flag4 == _FALSE_) || (param4 >= 0.)),
              errmsg,
              "In input file, either Omega_Lambda or Omega_fld must be left unspecified, except if Omega_scf is set and <0.0, in which case the contribution from the scalar field will be the free parameter.");
 
@@ -1298,6 +1302,11 @@ int input_read_parameters(
     pba->Omega0_scf = param3;
     Omega_tot += pba->Omega0_scf;
   }
+
+   if ((flag4 == _TRUE_) && (param4 >= 0.)){
+    pba->Omega0_tach_insq = param4;
+    Omega_tot += pba->Omega0_tach_insq;
+  }
   /* Step 2 */
   if (flag1 == _FALSE_) {
     //Fill with Lambda
@@ -1313,6 +1322,12 @@ int input_read_parameters(
     // Fill up with scalar field
     pba->Omega0_scf = 1. - pba->Omega0_k - Omega_tot;
     if (input_verbose > 0) printf(" -> matched budget equations by adjusting Omega_scf = %e\n",pba->Omega0_scf);
+  }
+
+   else if ((flag4 == _TRUE_) && (param4 < 0.)){
+    // Fill up with scalar field
+    pba->Omega0_tach_insq = 1. - pba->Omega0_k - Omega_tot;
+    if (input_verbose > 0) printf(" -> matched budget equations by adjusting Omega_tach_insq = %e\n",pba->Omega0_tach_insq);
   }
 
   /*
@@ -1425,6 +1440,37 @@ int input_read_parameters(
       }
     }
   }
+
+
+
+  /* Additional tach_insq parameters: */
+  if (pba->Omega0_tach_insq != 0.){
+    /** - Read parameters describing scalar field potential */
+    class_call(parser_read_list_of_doubles(pfc,
+                                           "tach_insq_parameters",
+                                           &(pba->tach_insq_parameters_size),
+                                           &(pba->tach_insq_parameters),
+                                           &flag1,
+                                           errmsg),
+               errmsg,errmsg);
+    class_read_int("tach_insq_tuning_index",pba->tach_insq_tuning_index);
+    class_test(pba->tach_insq_tuning_index >= pba->tach_insq_parameters_size,
+               errmsg,
+               "Tuning index tach_insq_tuning_index = %d is larger than the number of entries %d in tach_insq_parameters. Check your .ini file.",pba->tach_insq_tuning_index,pba->tach_insq_parameters_size);
+    /** - Assign shooting parameter */
+    class_read_double("tach_insq_shooting_parameter",pba->tach_insq_parameters[pba->tach_insq_tuning_index]);
+
+    tach_insq_n = pba->tach_insq_parameters[0];
+  
+
+        pba->phi_ini_tach_insq = pba->tach_insq_parameters[pba->tach_insq_parameters_size-2];
+        pba->phi_prime_ini_tach_insq = pba->tach_insq_parameters[pba->tach_insq_parameters_size-1];
+      
+    
+  }
+
+
+
 
   /** (b) assign values to thermodynamics cosmological parameters */
 
@@ -3206,6 +3252,20 @@ int input_default_params(
   pba->phi_ini_scf = 1;
   pba->phi_prime_ini_scf = 1;
 
+
+  pba->Omega0_tach_insq = 0.; /* Scalar field defaults */
+  
+  pba->tach_insq_parameters = NULL;
+  pba->tach_insq_parameters_size = 0;
+  pba->tach_insq_tuning_index = 1;
+  //MZ: initial conditions are as multiplicative factors of the radiation attractor values
+  pba->phi_ini_tach_insq = 1.0;
+  pba->phi_prime_ini_tach_insq = 0.0;
+
+
+
+
+
   pba->Omega0_k = 0.;
   pba->K = 0.;
   pba->sgnK = 0;
@@ -3838,6 +3898,12 @@ int input_try_unknown_parameters(double * unknown_parameter,
       output[i] = ba.background_table[(ba.bt_size-1)*ba.bg_size+ba.index_bg_rho_scf]/(ba.H0*ba.H0)
         -ba.Omega0_scf;
       break;
+  case Omega_tach_insq:
+      /** - In case scalar field is used to fill, pba->Omega0_tach_insq is not equal to pfzw->target_value[i].*/
+      output[i] = ba.background_table[(ba.bt_size-1)*ba.bg_size+ba.index_bg_rho_tach_insq]/(ba.H0*ba.H0)
+        -ba.Omega0_tach_insq;
+      break;
+
     case Omega_ini_dcdm:
     case omega_ini_dcdm:
       rho_dcdm_today = ba.background_table[(ba.bt_size-1)*ba.bg_size+ba.index_bg_rho_dcdm];
@@ -4010,6 +4076,18 @@ int input_get_guess(double *xguess,
         dxdy[index_guess] = 1.;
       }
       break;
+    case Omega_tach_insq:
+
+      /** - This guess is arbitrary, something nice using WKB should be implemented.
+      */
+
+        /* Default: take the passed value as xguess and set dxdy to 1. */
+        xguess[index_guess] = ba.tach_insq_parameters[ba.tach_insq_tuning_index];
+        dxdy[index_guess] = 1.;
+ 
+      break;
+
+
     case omega_ini_dcdm:
       Omega0_dcdmdr = 1./(ba.h*ba.h);
     case Omega_ini_dcdm:
@@ -4154,6 +4232,7 @@ int input_auxillary_target_conditions(struct file_content * pfc,
   case Omega_dcdmdr:
   case omega_dcdmdr:
   case Omega_scf:
+  case Omega_tach_insq:
   case Omega_ini_dcdm:
   case omega_ini_dcdm:
     /* Check that Omega's or omega's are nonzero: */

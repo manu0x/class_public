@@ -105,6 +105,23 @@ struct background
   //double scf_B; /**< \f$ \alpha \f$ : Albrecht-Skordis field shift */
   //double scf_A; /**< \f$ \alpha \f$ : Albrecht-Skordis offset */
 
+
+  double Omega0_tach_insq;        /**< \f$ \Omega_{0 tach_insq} \f$: scalar field */
+  short attractor_ic_tach_insq;   /**< whether the scalar field has attractor initial conditions */
+  double phi_ini_tach_insq;       /**< \f$ \phi(t_0) \f$: scalar field initial value */
+  double phi_prime_ini_tach_insq; /**< \f$ d\phi(t_0)/d\tau \f$: scalar field initial derivative wrt conformal time */
+  double * tach_insq_parameters;  /**< list of parameters describing the scalar field potential */
+  int tach_insq_parameters_size;  /**< size of tach_insq_parameters */
+  int tach_insq_tuning_index;     /**< index in tach_insq_parameters used for tuning */
+  //double tach_insq_lambda; /**< \f$ \lambda \f$ : scalar field exponential potential slope */
+  //double tach_insq_alpha;  /**< \f$ \alpha \f$ : Albrecht-Skordis polynomial slope */
+  //double tach_insq_B; /**< \f$ \alpha \f$ : Albrecht-Skordis field shift */
+  //double tach_insq_A; /**< \f$ \alpha \f$ : Albrecht-Skordis offset */
+
+
+ 
+
+
   double Omega0_k; /**< \f$ \Omega_{0_k} \f$: curvature contribution */
 
   int N_ncdm;                            /**< Number of distinguishable ncdm species */
@@ -203,6 +220,16 @@ struct background
   int index_bg_p_scf;         /**< scalar field pressure */
   int index_bg_p_prime_scf;         /**< scalar field pressure */
 
+  int index_bg_phi_tach_insq;       /**< scalar field value */
+  int index_bg_phi_prime_tach_insq; /**< scalar field derivative wrt conformal time */
+  int index_bg_V_tach_insq;         /**< scalar field potential V */
+  int index_bg_dV_tach_insq;        /**< scalar field potential derivative V' */
+  int index_bg_ddV_tach_insq;       /**< scalar field potential second derivative V'' */
+  int index_bg_rho_tach_insq;       /**< scalar field energy density */
+  int index_bg_p_tach_insq;         /**< scalar field pressure */
+  int index_bg_p_prime_tach_insq;         /**< scalar field pressure */
+
+
   int index_bg_rho_ncdm1;     /**< density of first ncdm species (others contiguous) */
   int index_bg_p_ncdm1;       /**< pressure of first ncdm species (others contiguous) */
   int index_bg_pseudo_p_ncdm1;/**< another statistical momentum useful in ncdma approximation */
@@ -273,6 +300,10 @@ struct background
   int index_bi_phi_scf;       /**< {B} scalar field value */
   int index_bi_phi_prime_scf; /**< {B} scalar field derivative wrt conformal time */
 
+  int index_bi_phi_tach_insq;       /**< {B} scalar field value */
+  int index_bi_phi_prime_tach_insq; /**< {B} scalar field derivative wrt conformal time */
+
+
   int index_bi_time;    /**< {C} proper (cosmological) time in Mpc */
   int index_bi_rs;      /**< {C} sound horizon */
   int index_bi_tau;     /**< {C} conformal time in Mpc */
@@ -298,6 +329,7 @@ struct background
   short has_dcdm;      /**< presence of decaying cold dark matter? */
   short has_dr;        /**< presence of relativistic decay radiation? */
   short has_scf;       /**< presence of a scalar field? */
+  short has_tach_insq;       /**< presence of a scalar field? */
   short has_ncdm;      /**< presence of non-cold dark matter? */
   short has_lambda;    /**< presence of cosmological constant? */
   short has_fld;       /**< presence of fluid with constant w and cs2? */
@@ -541,6 +573,23 @@ extern "C" {
                  struct background *pba,
                  double phi
                  );
+
+  double V_tach_insq(
+               struct background *pba,
+               double phi
+               );
+
+  double dV_tach_insq(
+		struct background *pba,
+		double phi
+		);
+
+  double ddV_tach_insq(
+                 struct background *pba,
+                 double phi
+                 );
+
+
 
   /** Coupling between scalar field and matter **/
   double Q_scf(
