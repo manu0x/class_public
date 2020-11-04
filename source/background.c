@@ -379,6 +379,26 @@ int background_functions(
     //printf(" a= %e, Omega_tach_insq = %f, \n ",a_rel, pvecback[pba->index_bg_rho_tach_insq]/rho_tot );
   }
 
+  /* Tachyonic field */
+  if (pba->has_tach_exp == _TRUE_) {
+    phi = pvecback_B[pba->index_bi_phi_tach_exp];
+    phi_prime = pvecback_B[pba->index_bi_phi_prime_tach_exp];
+    pvecback[pba->index_bg_phi_tach_exp] = phi; // value of the scalar field phi
+    pvecback[pba->index_bg_phi_prime_tach_exp] = phi_prime; // value of the scalar field phi derivative wrt conformal time
+    pvecback[pba->index_bg_V_tach_exp] = V_tach_exp(pba,phi); //V_tach_exp(pba,phi); //write here potential as function of phi
+    pvecback[pba->index_bg_dV_tach_exp] = dV_tach_exp(pba,phi); // dV_tach_exp(pba,phi); //potential' as function of phi
+    pvecback[pba->index_bg_ddV_tach_exp] = ddV_tach_exp(pba,phi); // ddV_tach_exp(pba,phi); //potential'' as function of phi
+    pvecback[pba->index_bg_rho_tach_exp] = V_tach_exp(pba,phi)/( 3.0*sqrt(1.0-phi_prime*phi_prime/(a*a)) ); // energy of the scalar field. The field units are set automatically by setting the initial conditions
+    pvecback[pba->index_bg_p_tach_exp] = -V_tach_exp(pba,phi)*sqrt(1.0-phi_prime*phi_prime/(a*a))/3.0 ; // pressure of the scalar field
+    rho_tot += pvecback[pba->index_bg_rho_tach_exp];
+    p_tot += pvecback[pba->index_bg_p_tach_exp];
+    dp_dloga += 0.0; /** <-- This depends on a_prime_over_a, so we cannot add it now! */
+    //divide relativistic & nonrelativistic (not very meaningful for oscillatory models)
+    rho_r += 3.*pvecback[pba->index_bg_p_tach_exp]; //field pressure contributes radiation
+    rho_m += pvecback[pba->index_bg_rho_tach_exp] - 3.* pvecback[pba->index_bg_p_tach_exp]; //the rest contributes matter
+    //printf(" a= %e, Omega_tach_exp = %f, \n ",a_rel, pvecback[pba->index_bg_rho_tach_exp]/rho_tot );
+  }
+
 
   /* ncdm */
   if (pba->has_ncdm == _TRUE_) {
@@ -501,7 +521,12 @@ if (pba->has_tach_insq == _TRUE_){
 	*(pvecback[pba->index_bg_phi_prime_tach_insq]/(a*a))* (-2.0*pvecback[pba->index_bg_dV_tach_insq]*a*a - 
 				3.0*pvecback[pba->index_bg_H]*a*pvecback[pba->index_bg_phi_prime_tach_insq]*pvecback[pba->index_bg_V_tach_insq]);
   }
-
+if (pba->has_tach_exp == _TRUE_){
+    /** The contribution of tach_exp was not added to dp_dloga, add p_tach_exp_prime here: */
+    pvecback[pba->index_bg_p_prime_tach_exp] = sqrt(1.0 - pvecback[pba->index_bg_phi_prime_tach_exp]*pvecback[pba->index_bg_phi_prime_tach_exp]/(a*a))
+	*(pvecback[pba->index_bg_phi_prime_tach_exp]/(a*a))* (-2.0*pvecback[pba->index_bg_dV_tach_exp]*a*a - 
+				3.0*pvecback[pba->index_bg_H]*a*pvecback[pba->index_bg_phi_prime_tach_exp]*pvecback[pba->index_bg_V_tach_exp]);
+  }
 
   /** - compute critical density */
   rho_crit = rho_tot-pba->K/a/a;
@@ -885,6 +910,11 @@ int background_free_input(
       free(pba->tach_insq_parameters);
   }
 
+ if (pba->Omega0_tach_exp != 0.){
+    if (pba->tach_exp_parameters != NULL)
+      free(pba->tach_exp_parameters);
+  }
+
   return _SUCCESS_;
 }
 
@@ -916,6 +946,7 @@ int background_indices(
   pba->has_dr = _FALSE_;
   pba->has_scf = _FALSE_;
   pba->has_tach_insq = _FALSE_;
+  pba->has_tach_exp = _FALSE_;
   pba->has_lambda = _FALSE_;
   pba->has_fld = _FALSE_;
   pba->has_ur = _FALSE_;
@@ -940,6 +971,9 @@ int background_indices(
 
   if (pba->Omega0_tach_insq != 0.)
     pba->has_tach_insq = _TRUE_;
+
+  if (pba->Omega0_tach_exp != 0.)
+    pba->has_tach_exp = _TRUE_;
 
   if (pba->Omega0_lambda != 0.)
     pba->has_lambda = _TRUE_;
@@ -1014,6 +1048,16 @@ int background_indices(
   class_define_index(pba->index_bg_rho_tach_insq,pba->has_tach_insq,index_bg,1);
   class_define_index(pba->index_bg_p_tach_insq,pba->has_tach_insq,index_bg,1);
   class_define_index(pba->index_bg_p_prime_tach_insq,pba->has_tach_insq,index_bg,1);
+
+  /* - indices for tachyonic scalar field */
+  class_define_index(pba->index_bg_phi_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_phi_prime_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_V_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_dV_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_ddV_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_rho_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_p_tach_exp,pba->has_tach_exp,index_bg,1);
+  class_define_index(pba->index_bg_p_prime_tach_exp,pba->has_tach_exp,index_bg,1);
 
 
 
@@ -1112,6 +1156,9 @@ int background_indices(
 
   class_define_index(pba->index_bi_phi_tach_insq,pba->has_tach_insq,index_bi,1);
   class_define_index(pba->index_bi_phi_prime_tach_insq,pba->has_tach_insq,index_bi,1);
+
+  class_define_index(pba->index_bi_phi_tach_exp,pba->has_tach_exp,index_bi,1);
+  class_define_index(pba->index_bi_phi_prime_tach_exp,pba->has_tach_exp,index_bi,1);
 
   /* End of {B} variables, now continue with {C} variables */
   pba->bi_B_size = index_bi;
@@ -1994,6 +2041,23 @@ int background_solve(
       printf("%.3f]\n",pba->tach_insq_parameters[pba->tach_insq_parameters_size-1]);
     }
 
+    if (pba->has_tach_exp == _TRUE_){
+      printf("    Scalar field details:\n");
+      printf("     -> Omega_tach_exp = %g, wished %g\n",
+             pvecback[pba->index_bg_rho_tach_exp]/pvecback[pba->index_bg_rho_crit], pba->Omega0_tach_exp);
+      if(pba->has_lambda == _TRUE_)
+        printf("     -> Omega_Lambda = %g, wished %g\n",
+               pvecback[pba->index_bg_rho_lambda]/pvecback[pba->index_bg_rho_crit], pba->Omega0_lambda);
+      printf("     -> parameters: [n,phi_i,phi_prime_i] = \n");
+      printf("                    [");
+      for (i=0; i<pba->tach_exp_parameters_size-1; i++){
+        printf("%.3f, ",pba->tach_exp_parameters[i]);
+      }
+      printf("%.3f]\n",pba->tach_exp_parameters[pba->tach_exp_parameters_size-1]);
+    }
+
+
+
 
   }
 
@@ -2038,6 +2102,8 @@ int background_initial_conditions(
   int counter,is_early_enough,n_ncdm;
   double scf_lambda;
   double tach_insq_n;
+  double tach_exp_Va;
+  double tach_exp_phia;
   double rho_fld_today;
   double w_fld,dw_over_da_fld,integral_fld;
 
@@ -2195,6 +2261,23 @@ int background_initial_conditions(
                pvecback_integration[pba->index_bi_phi_tach_insq],
                pvecback_integration[pba->index_bi_phi_tach_insq]);
   }
+
+  if(pba->has_tach_exp == _TRUE_){
+    tach_exp_Va = pba->tach_exp_parameters[0];
+    tach_exp_phia = pba->tach_exp_parameters[1];
+  
+ 
+      pvecback_integration[pba->index_bi_phi_tach_exp] = pba->phi_ini_tach_exp;
+      pvecback_integration[pba->index_bi_phi_prime_tach_exp] = pba->phi_prime_ini_tach_exp;
+    
+    class_test(!isfinite(pvecback_integration[pba->index_bi_phi_tach_exp]) ||
+               !isfinite(pvecback_integration[pba->index_bi_phi_tach_exp]),
+               pba->error_message,
+               "initial phi = %e phi_prime = %e -> check initial conditions",
+               pvecback_integration[pba->index_bi_phi_tach_exp],
+               pvecback_integration[pba->index_bi_phi_tach_exp]);
+  }
+
 
 
   /* Infer pvecback from pvecback_integration */
@@ -2373,6 +2456,16 @@ int background_output_titles(struct background * pba,
   class_store_columntitle(titles,"V'_tach_insq",pba->has_tach_insq);
   class_store_columntitle(titles,"V''_tach_insq",pba->has_tach_insq);
 
+  class_store_columntitle(titles,"(.)rho_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"(.)p_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"(.)p_prime_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"phi_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"phi'_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"V_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"V'_tach_exp",pba->has_tach_exp);
+  class_store_columntitle(titles,"V''_tach_exp",pba->has_tach_exp);
+
+
   class_store_columntitle(titles,"(.)rho_tot",_TRUE_);
   class_store_columntitle(titles,"(.)p_tot",_TRUE_);
   class_store_columntitle(titles,"(.)p_tot_prime",_TRUE_);
@@ -2440,6 +2533,15 @@ int background_output_data(
     class_store_double(dataptr,pvecback[pba->index_bg_V_tach_insq],pba->has_tach_insq,storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_dV_tach_insq],pba->has_tach_insq,storeidx);
     class_store_double(dataptr,pvecback[pba->index_bg_ddV_tach_insq],pba->has_tach_insq,storeidx);
+
+    class_store_double(dataptr,pvecback[pba->index_bg_rho_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_p_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_p_prime_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_phi_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_phi_prime_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_V_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_dV_tach_exp],pba->has_tach_exp,storeidx);
+    class_store_double(dataptr,pvecback[pba->index_bg_ddV_tach_exp],pba->has_tach_exp,storeidx);
 
 
     class_store_double(dataptr,pvecback[pba->index_bg_rho_tot],_TRUE_,storeidx);
@@ -2566,6 +2668,17 @@ int background_derivs(
 		*(1.0 - 1.5*y[pba->index_bi_phi_prime_tach_insq]*y[pba->index_bi_phi_prime_tach_insq]/
                (y[pba->index_bi_a]*y[pba->index_bi_a]) ) ;
   }
+
+  if (pba->has_tach_exp == _TRUE_){
+    /** - Scalar field equation: \f$ \phi'' + 2 a H \phi' + a^2 dV = 0 \f$  (note H is wrt cosmic time) */
+    dy[pba->index_bi_phi_tach_exp] = y[pba->index_bi_phi_prime_tach_exp];
+    dy[pba->index_bi_phi_prime_tach_exp] = -(y[pba->index_bi_a]*y[pba->index_bi_a]*dV_tach_exp(pba,y[pba->index_bi_phi_tach_exp])/
+             V_tach_exp(pba,y[pba->index_bi_phi_tach_exp]))*(1.0 - y[pba->index_bi_phi_prime_tach_exp]*y[pba->index_bi_phi_prime_tach_exp]/
+               (y[pba->index_bi_a]*y[pba->index_bi_a]) ) - 2.0*pvecback[pba->index_bg_H]*y[pba->index_bi_a]*y[pba->index_bi_phi_prime_tach_exp]
+		*(1.0 - 1.5*y[pba->index_bi_phi_prime_tach_exp]*y[pba->index_bi_phi_prime_tach_exp]/
+               (y[pba->index_bi_a]*y[pba->index_bi_a]) ) ;
+  }
+
 
 
   return _SUCCESS_;
@@ -2725,6 +2838,42 @@ double ddV_tach_insq(struct background *pba,double phi)
 
   return  6.0*cn/(phi*phi*phi*phi);
 }
+
+
+double V_tach_exp(struct background *pba,double phi) 
+{
+  double Va  = pba->tach_exp_parameters[0];
+  double phia  = pba->tach_exp_parameters[1];
+ 
+
+
+  return  Va*exp(-phi/phia);
+}
+
+double dV_tach_exp(struct background *pba,double phi) 
+{
+   double Va  = pba->tach_exp_parameters[0];
+  double phia  = pba->tach_exp_parameters[1];
+ 
+
+
+  return  -Va*exp(-phi/phia)/phia;
+
+
+  
+ 
+}
+
+double ddV_tach_exp(struct background *pba,double phi) 
+{
+  double Va  = pba->tach_exp_parameters[0];
+  double phia  = pba->tach_exp_parameters[1];
+ 
+
+
+  return  -Va*exp(-phi/phia)/(phia*phia);
+}
+
 /**
  * Function outputting the fractions Omega of the total critical density
  * today, and also the reduced fractions omega=Omega*h*h
@@ -2813,10 +2962,14 @@ int background_output_budget(
     }
 
    if(pba->has_tach_insq){
-      _class_print_species_("Tachyon Field",tach_insq);
+      _class_print_species_("Tachyon Field inverse square",tach_insq);
       budget_other+=pba->Omega0_tach_insq;
     }
 
+ if(pba->has_tach_exp){
+      _class_print_species_("Tachyon Field exponential",tach_exp);
+      budget_other+=pba->Omega0_tach_exp;
+    }
 
     if(pba->has_curvature){
       _class_print_species_("Spatial Curvature",k);
@@ -2829,7 +2982,7 @@ int background_output_budget(
     if(pba->N_ncdm > 0){
       printf(" Neutrinos                        Omega = %-15g , omega = %-15g \n",budget_neutrino,budget_neutrino*pba->h*pba->h);
     }
-    if(pba->has_lambda || pba->has_fld || pba->has_scf || pba->has_tach_insq ||pba->has_curvature){
+    if(pba->has_lambda || pba->has_fld || pba->has_scf || pba->has_tach_insq ||pba->has_tach_exp ||pba->has_curvature){
       printf(" Other Content                    Omega = %-15g , omega = %-15g \n",budget_other,budget_other*pba->h*pba->h);
     }
     printf(" TOTAL                            Omega = %-15g , omega = %-15g \n",budget_radiation+budget_matter+budget_neutrino+budget_other,(budget_radiation+budget_matter+budget_neutrino+budget_other)*pba->h*pba->h);

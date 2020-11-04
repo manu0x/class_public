@@ -1055,12 +1055,21 @@ int output_background(
       fprintf(backfile,"# --> the potential V(phi) is given in units of m_Pl^2/Mpc^2.\n");
 	}
     if (pba->has_tach_insq == _TRUE_){
-      fprintf(backfile,"# The units of phi, tau in the derivatives and the potential V are the following:\n");
+      fprintf(backfile,"# For inverse sqr. tach. field: The units of phi, tau in the derivatives and the potential V are the following:\n");
       fprintf(backfile,"# --> phi is given in units of the reduced Planck mass m_Pl = (8 pi G)^(-1/2)\n");
       fprintf(backfile,"# --> tau in the derivative of V(phi) is given in units of Mpc.\n");
       fprintf(backfile,"# --> the potential V(phi) is given in units of m_Pl^2/Mpc^2.\n");
 
     }
+    if (pba->has_tach_exp == _TRUE_){
+      fprintf(backfile,"# For exp. tach. field:  The units of phi, tau in the derivatives and the potential V are the following:\n");
+      fprintf(backfile,"# --> phi is given in units of the reduced Planck mass m_Pl = (8 pi G)^(-1/2)\n");
+      fprintf(backfile,"# --> tau in the derivative of V(phi) is given in units of Mpc.\n");
+      fprintf(backfile,"# --> the potential V(phi) is given in units of m_Pl^2/Mpc^2.\n");
+
+    }
+
+
   }
 
   output_print_data(backfile,
