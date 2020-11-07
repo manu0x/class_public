@@ -239,6 +239,8 @@ int perturb_output_data(
           class_store_double(dataptr,tk[ppt->index_tp_delta_dcdm],ppt->has_source_delta_dcdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_dr],ppt->has_source_delta_dr,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_scf],ppt->has_source_delta_scf,storeidx);
+	  class_store_double(dataptr,tk[ppt->index_tp_delta_tach_insq],ppt->has_source_delta_tach_insq,storeidx);
+	  class_store_double(dataptr,tk[ppt->index_tp_delta_tach_exp],ppt->has_source_delta_tach_exp,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_tot],ppt->has_source_delta_tot,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_phi],ppt->has_source_phi,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_psi],ppt->has_source_psi,storeidx);
@@ -267,6 +269,8 @@ int perturb_output_data(
           class_store_double(dataptr,tk[ppt->index_tp_theta_dcdm],ppt->has_source_theta_dcdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_theta_dr],ppt->has_source_theta_dr,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_theta_scf],ppt->has_source_theta_scf,storeidx);
+          class_store_double(dataptr,tk[ppt->index_tp_theta_tach_insq],ppt->has_source_theta_tach_insq,storeidx);
+          class_store_double(dataptr,tk[ppt->index_tp_theta_tach_exp],ppt->has_source_theta_tach_exp,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_theta_tot],ppt->has_source_theta_tot,storeidx);
 
         }
@@ -333,6 +337,8 @@ int perturb_output_titles(
       class_store_columntitle(titles,"d_dcdm",pba->has_dcdm);
       class_store_columntitle(titles,"d_dr",pba->has_dr);
       class_store_columntitle(titles,"d_scf",pba->has_scf);
+      class_store_columntitle(titles,"d_tach_insq",pba->has_tach_insq);
+      class_store_columntitle(titles,"d_tach_exp",pba->has_tach_exp);
       class_store_columntitle(titles,"d_tot",_TRUE_);
       class_store_columntitle(titles,"phi",ppt->has_source_phi);
       class_store_columntitle(titles,"psi",ppt->has_source_psi);
@@ -361,6 +367,8 @@ int perturb_output_titles(
       class_store_columntitle(titles,"t_dcdm",pba->has_dcdm);
       class_store_columntitle(titles,"t_dr",pba->has_dr);
       class_store_columntitle(titles,"t__scf",pba->has_scf);
+      class_store_columntitle(titles,"t__tach_insq",pba->has_tach_insq);
+      class_store_columntitle(titles,"t__tach_exp",pba->has_tach_exp);
       class_store_columntitle(titles,"t_tot",_TRUE_);
     }
   }
@@ -1045,6 +1053,8 @@ int perturb_indices(
   ppt->has_source_delta_dcdm = _FALSE_;
   ppt->has_source_delta_fld = _FALSE_;
   ppt->has_source_delta_scf = _FALSE_;
+  ppt->has_source_delta_tach_insq = _FALSE_;
+  ppt->has_source_delta_tach_exp = _FALSE_;
   ppt->has_source_delta_dr = _FALSE_;
   ppt->has_source_delta_ur = _FALSE_;
   ppt->has_source_delta_idr = _FALSE_;
@@ -1059,6 +1069,8 @@ int perturb_indices(
   ppt->has_source_theta_dcdm = _FALSE_;
   ppt->has_source_theta_fld = _FALSE_;
   ppt->has_source_theta_scf = _FALSE_;
+  ppt->has_source_theta_tach_insq = _FALSE_;
+  ppt->has_source_theta_tach_exp = _FALSE_;
   ppt->has_source_theta_dr = _FALSE_;
   ppt->has_source_theta_ur = _FALSE_;
   ppt->has_source_theta_idr = _FALSE_;
@@ -1150,6 +1162,10 @@ int perturb_indices(
           ppt->has_source_delta_fld = _TRUE_;
         if (pba->has_scf == _TRUE_)
           ppt->has_source_delta_scf = _TRUE_;
+        if (pba->has_tach_insq == _TRUE_)
+          ppt->has_source_delta_tach_insq = _TRUE_;
+        if (pba->has_tach_exp == _TRUE_)
+          ppt->has_source_delta_tach_exp = _TRUE_;
         if (pba->has_ur == _TRUE_)
           ppt->has_source_delta_ur = _TRUE_;
         if (pba->has_idr == _TRUE_)
@@ -1181,6 +1197,10 @@ int perturb_indices(
           ppt->has_source_theta_fld = _TRUE_;
         if (pba->has_scf == _TRUE_)
           ppt->has_source_theta_scf = _TRUE_;
+        if (pba->has_tach_insq == _TRUE_)
+          ppt->has_source_theta_tach_insq = _TRUE_;
+        if (pba->has_tach_exp == _TRUE_)
+          ppt->has_source_theta_tach_exp = _TRUE_;
         if (pba->has_ur == _TRUE_)
           ppt->has_source_theta_ur = _TRUE_;
         if (pba->has_idr == _TRUE_)
@@ -1256,6 +1276,8 @@ int perturb_indices(
       class_define_index(ppt->index_tp_delta_dcdm, ppt->has_source_delta_dcdm,index_type,1);
       class_define_index(ppt->index_tp_delta_fld,  ppt->has_source_delta_fld, index_type,1);
       class_define_index(ppt->index_tp_delta_scf,  ppt->has_source_delta_scf, index_type,1);
+      class_define_index(ppt->index_tp_delta_tach_insq,  ppt->has_source_delta_tach_insq, index_type,1);
+      class_define_index(ppt->index_tp_delta_tach_exp,  ppt->has_source_delta_tach_exp, index_type,1);
       class_define_index(ppt->index_tp_delta_dr,   ppt->has_source_delta_dr,  index_type,1);
       class_define_index(ppt->index_tp_delta_ur,   ppt->has_source_delta_ur,  index_type,1);
       class_define_index(ppt->index_tp_delta_idr,  ppt->has_source_delta_idr, index_type,1);
@@ -1270,6 +1292,8 @@ int perturb_indices(
       class_define_index(ppt->index_tp_theta_dcdm, ppt->has_source_theta_dcdm,index_type,1);
       class_define_index(ppt->index_tp_theta_fld,  ppt->has_source_theta_fld, index_type,1);
       class_define_index(ppt->index_tp_theta_scf,  ppt->has_source_theta_scf, index_type,1);
+      class_define_index(ppt->index_tp_theta_tach_insq,  ppt->has_source_theta_tach_insq, index_type,1);
+      class_define_index(ppt->index_tp_theta_tach_exp,  ppt->has_source_theta_tach_exp, index_type,1);
       class_define_index(ppt->index_tp_theta_dr,   ppt->has_source_theta_dr,  index_type,1);
       class_define_index(ppt->index_tp_theta_ur,   ppt->has_source_theta_ur,  index_type,1);
       class_define_index(ppt->index_tp_theta_idr,  ppt->has_source_theta_idr, index_type,1);
@@ -3157,6 +3181,12 @@ int perturb_prepare_k_output(struct background * pba,
       /* Scalar field scf */
       class_store_columntitle(ppt->scalar_titles, "delta_scf", pba->has_scf);
       class_store_columntitle(ppt->scalar_titles, "theta_scf", pba->has_scf);
+      /* Scalar field tach_insq */
+      class_store_columntitle(ppt->scalar_titles, "delta_tach_insq", pba->has_tach_insq);
+      class_store_columntitle(ppt->scalar_titles, "theta_tach_insq", pba->has_tach_insq);
+      /* Scalar field tach_exp */
+      class_store_columntitle(ppt->scalar_titles, "delta_tach_exp", pba->has_tach_exp);
+      class_store_columntitle(ppt->scalar_titles, "theta_tach_exp", pba->has_tach_exp);
       /** Fluid */
       class_store_columntitle(ppt->scalar_titles, "delta_rho_fld", pba->has_fld);
       class_store_columntitle(ppt->scalar_titles, "rho_plus_p_theta_fld", pba->has_fld);
@@ -3751,6 +3781,19 @@ int perturb_vector_init(
     class_define_index(ppv->index_pt_phi_scf,pba->has_scf,index_pt,1); /* scalar field density */
     class_define_index(ppv->index_pt_phi_prime_scf,pba->has_scf,index_pt,1); /* scalar field velocity */
 
+    /* scalar field */
+
+    class_define_index(ppv->index_pt_phi_tach_insq,pba->has_tach_insq,index_pt,1); /* scalar field density */
+    class_define_index(ppv->index_pt_phi_prime_tach_insq,pba->has_tach_insq,index_pt,1); /* scalar field velocity */
+
+
+
+    /* scalar field */
+
+    class_define_index(ppv->index_pt_phi_tach_exp,pba->has_tach_exp,index_pt,1); /* scalar field density */
+    class_define_index(ppv->index_pt_phi_prime_tach_exp,pba->has_tach_exp,index_pt,1); /* scalar field velocity */
+
+
     /* perturbed recombination: the indices are defined once tca is off. */
     if ( (ppt->has_perturbed_recombination == _TRUE_) && (ppw->approx[ppw->index_ap_tca] == (int)tca_off) ){
       class_define_index(ppv->index_pt_perturbed_recombination_delta_temp,_TRUE_,index_pt,1);
@@ -4224,6 +4267,26 @@ int perturb_vector_init(
         ppv->y[ppv->index_pt_phi_prime_scf] =
           ppw->pv->y[ppw->pv->index_pt_phi_prime_scf];
       }
+
+      if (pba->has_tach_insq == _TRUE_) {
+
+        ppv->y[ppv->index_pt_phi_tach_insq] =
+          ppw->pv->y[ppw->pv->index_pt_phi_tach_insq];
+
+        ppv->y[ppv->index_pt_phi_prime_tach_insq] =
+          ppw->pv->y[ppw->pv->index_pt_phi_prime_tach_insq];
+      }
+
+      if (pba->has_tach_exp == _TRUE_) {
+
+        ppv->y[ppv->index_pt_phi_tach_exp] =
+          ppw->pv->y[ppw->pv->index_pt_phi_tach_exp];
+
+        ppv->y[ppv->index_pt_phi_prime_tach_exp] =
+          ppw->pv->y[ppw->pv->index_pt_phi_prime_tach_exp];
+      }
+
+
 
       if (ppt->gauge == synchronous)
         ppv->y[ppv->index_pt_eta] =
@@ -5279,6 +5342,46 @@ int perturb_initial_conditions(struct precision * ppr,
            a*a/ppw->pvecback[pba->index_bg_phi_prime_scf]*( - ktau_two/4.*(1.+1./3.)*(4.-3.*1.)/(4.-6.*(1/3.)+3.*1.)*ppw->pvecback[pba->index_bg_rho_scf] - ppw->pvecback[pba->index_bg_dV_scf]*ppw->pv->y[ppw->pv->index_pt_phi_scf])* ppr->curvature_ini * s2_squared; */
       }
 
+
+      if (pba->has_tach_insq == _TRUE_) {
+        /** - ---> Canonical field (solving for the perturbations):
+         *  initial perturbations set to zero, they should reach the attractor soon enough.
+         *  - --->  TODO: Incorporate the attractor IC from 1004.5509.
+         *  delta_phi \f$ = -(a/k)^2/\phi'(\rho + p)\theta \f$,
+         *  delta_phi_prime \f$ = a^2/\phi' \f$ (delta_rho_phi + V'delta_phi),
+         *  and assume theta, delta_rho as for perfect fluid
+         *  with \f$ c_s^2 = 1 \f$ and w = 1/3 (ASSUMES radiation TRACKING)
+         */
+
+        ppw->pv->y[ppw->pv->index_pt_phi_tach_insq] = 0.;
+        /*  a*a/k/k/ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*k*ktau_three/4.*1./(4.-6.*(1./3.)+3.*1.) * (ppw->pvecback[pba->index_bg_rho_tach_insq] + ppw->pvecback[pba->index_bg_p_tach_insq])* ppr->curvature_ini * s2_squared; */
+
+        ppw->pv->y[ppw->pv->index_pt_phi_prime_tach_insq] = 0.;
+        /* delta_fld expression * rho_tach_insq with the w = 1/3, c_s = 1
+           a*a/ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*( - ktau_two/4.*(1.+1./3.)*(4.-3.*1.)/(4.-6.*(1/3.)+3.*1.)*ppw->pvecback[pba->index_bg_rho_tach_insq] - ppw->pvecback[pba->index_bg_dV_tach_insq]*ppw->pv->y[ppw->pv->index_pt_phi_tach_insq])* ppr->curvature_ini * s2_squared; */
+      }
+
+
+
+      if (pba->has_tach_exp == _TRUE_) {
+        /** - ---> Canonical field (solving for the perturbations):
+         *  initial perturbations set to zero, they should reach the attractor soon enough.
+         *  - --->  TODO: Incorporate the attractor IC from 1004.5509.
+         *  delta_phi \f$ = -(a/k)^2/\phi'(\rho + p)\theta \f$,
+         *  delta_phi_prime \f$ = a^2/\phi' \f$ (delta_rho_phi + V'delta_phi),
+         *  and assume theta, delta_rho as for perfect fluid
+         *  with \f$ c_s^2 = 1 \f$ and w = 1/3 (ASSUMES radiation TRACKING)
+         */
+
+        ppw->pv->y[ppw->pv->index_pt_phi_tach_exp] = 0.;
+        /*  a*a/k/k/ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*k*ktau_three/4.*1./(4.-6.*(1./3.)+3.*1.) * (ppw->pvecback[pba->index_bg_rho_tach_exp] + ppw->pvecback[pba->index_bg_p_tach_exp])* ppr->curvature_ini * s2_squared; */
+
+        ppw->pv->y[ppw->pv->index_pt_phi_prime_tach_exp] = 0.;
+        /* delta_fld expression * rho_tach_exp with the w = 1/3, c_s = 1
+           a*a/ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*( - ktau_two/4.*(1.+1./3.)*(4.-3.*1.)/(4.-6.*(1/3.)+3.*1.)*ppw->pvecback[pba->index_bg_rho_tach_exp] - ppw->pvecback[pba->index_bg_dV_tach_exp]*ppw->pv->y[ppw->pv->index_pt_phi_tach_exp])* ppr->curvature_ini * s2_squared; */
+      }
+
+
       /* all relativistic relics: ur, early ncdm, dr */
 
       if ((pba->has_ur == _TRUE_) || (pba->has_ncdm == _TRUE_) || (pba->has_dr == _TRUE_) || (pba->has_idr == _TRUE_)) {
@@ -5534,6 +5637,9 @@ int perturb_initial_conditions(struct precision * ppr,
            -a*a* dV_scf(pba,ppw->pvecback[pba->index_bg_phi_scf])*alpha
            +ppw->pvecback[pba->index_bg_phi_prime_scf]*alpha_prime);
       }
+
+
+
 
       if ((pba->has_ur == _TRUE_) || (pba->has_ncdm == _TRUE_) || (pba->has_dr == _TRUE_)  || (pba->has_idr == _TRUE_)) {
 
@@ -6477,6 +6583,8 @@ int perturb_total_stress_energy(
   double rho_relativistic;
   double rho_dr_over_f;
   double delta_rho_scf, delta_p_scf, psi;
+  double delta_rho_tach_insq, delta_p_tach_insq;
+  double delta_rho_tach_exp, delta_p_tach_exp;
   /** Variables used for FLD and PPF */
   double c_gamma_k_H_square;
   double Gamma_prime_plus_a_prime_over_a_Gamma, s2sq=1.;
@@ -6844,6 +6952,97 @@ int perturb_total_stress_energy(
 
     }
 
+    if (pba->has_tach_insq == _TRUE_) {
+
+      if (ppt->gauge == synchronous){
+
+
+        delta_rho_tach_insq =  1./3.*
+          ((1./a2)*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		pow((1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2),1.5)
+           + ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]/
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2));
+        delta_p_tach_insq = 1./3.*
+          ((1./a2)*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2)
+           - ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]*
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2));
+
+
+      }
+      else{
+        /* equation for psi */
+        psi = y[ppw->pv->index_pt_phi] - 4.5 * (a2/k/k) * ppw->rho_plus_p_shear;
+
+        delta_rho_tach_insq =  1./3.*
+          (1./a2*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]
+           + ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]
+           - 1./a2*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_insq],2)*psi);
+        delta_p_tach_insq =  1./3.*
+          (1./a2*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]
+           - ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]
+           - 1./a2*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_insq],2)*psi);
+      }
+
+      ppw->delta_rho += delta_rho_tach_insq;
+
+      ppw->rho_plus_p_theta +=  1./3.*
+        k*k/a2*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2);
+
+      ppw->delta_p += delta_p_tach_insq;
+
+      ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_tach_insq]+ppw->pvecback[pba->index_bg_p_tach_insq];
+
+    }
+
+
+    if (pba->has_tach_exp == _TRUE_) {
+
+      if (ppt->gauge == synchronous){
+
+
+        delta_rho_tach_exp =  1./3.*
+          ((1./a2)*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		pow((1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2),1.5)
+           + ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]/
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2));
+        delta_p_tach_exp = 1./3.*
+          ((1./a2)*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2)
+           - ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]*
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2));
+
+
+      }
+      else{
+        /* equation for psi */
+        psi = y[ppw->pv->index_pt_phi] - 4.5 * (a2/k/k) * ppw->rho_plus_p_shear;
+
+        delta_rho_tach_exp =  1./3.*
+          (1./a2*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]
+           + ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]
+           - 1./a2*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_exp],2)*psi);
+        delta_p_tach_exp =  1./3.*
+          (1./a2*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]
+           - ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]
+           - 1./a2*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_exp],2)*psi);
+      }
+
+      ppw->delta_rho += delta_rho_tach_exp;
+
+      ppw->rho_plus_p_theta +=  1./3.*
+        k*k/a2*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2);
+
+      ppw->delta_p += delta_p_tach_exp;
+
+      ppw->rho_plus_p_tot += ppw->pvecback[pba->index_bg_rho_tach_exp]+ppw->pvecback[pba->index_bg_p_tach_exp];
+
+    }
+
+
+
     /* add your extra species here */
 
     /* fluid contribution */
@@ -7122,7 +7321,7 @@ int perturb_sources(
   double * pvecthermo;
   double * pvecmetric;
 
-  double delta_g, delta_rho_scf, rho_plus_p_theta_scf;
+  double delta_g, delta_rho_scf, rho_plus_p_theta_scf, delta_rho_tach_insq, rho_plus_p_theta_tach_insq, delta_rho_tach_exp, rho_plus_p_theta_tach_exp;
   double a_prime_over_a=0.;  /* (a'/a) */
   double a_prime_over_a_prime=0.;  /* (a'/a)' */
   double w_fld,dw_over_da_fld,integral_fld;
@@ -7478,6 +7677,54 @@ int perturb_sources(
       _set_source_(ppt->index_tp_delta_scf) = delta_rho_scf/pvecback[pba->index_bg_rho_scf];
     }
 
+    if (ppt->has_source_delta_tach_insq == _TRUE_) {
+      if (ppt->gauge == synchronous){
+        delta_rho_tach_insq =  1./3.*
+         ((1./a2_rel)*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		pow((1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2_rel),1.5)
+           + ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]/
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2_rel));
+
+          + 3.*a_prime_over_a*(1.+pvecback[pba->index_bg_p_tach_insq]/pvecback[pba->index_bg_rho_tach_insq])*theta_over_k2; // N-body gauge correction
+
+	 
+      }
+      else{
+        delta_rho_tach_insq =  1./3.*
+          (1./a2_rel*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]
+           + ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]
+           - 1./a2_rel*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_insq],2)*ppw->pvecmetric[ppw->index_mt_psi])
+          + 3.*a_prime_over_a*(1.+pvecback[pba->index_bg_p_tach_insq]/pvecback[pba->index_bg_rho_tach_insq])*theta_over_k2; // N-body gauge correction
+      }
+      _set_source_(ppt->index_tp_delta_tach_insq) = delta_rho_tach_insq/pvecback[pba->index_bg_rho_tach_insq];
+    }
+
+
+
+    if (ppt->has_source_delta_tach_exp == _TRUE_) {
+      if (ppt->gauge == synchronous){
+        delta_rho_tach_exp =  1./3.*
+          ((1./a2_rel)*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		pow((1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2_rel),1.5)
+           + ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]/
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2_rel));
+
+          + 3.*a_prime_over_a*(1.+pvecback[pba->index_bg_p_tach_exp]/pvecback[pba->index_bg_rho_tach_exp])*theta_over_k2; // N-body gauge correction
+
+	 
+      }
+      else{
+        delta_rho_tach_exp =  1./3.*
+          (1./a2_rel*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]
+           + ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]
+           - 1./a2_rel*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_exp],2)*ppw->pvecmetric[ppw->index_mt_psi])
+          + 3.*a_prime_over_a*(1.+pvecback[pba->index_bg_p_tach_exp]/pvecback[pba->index_bg_rho_tach_exp])*theta_over_k2; // N-body gauge correction
+      }
+      _set_source_(ppt->index_tp_delta_tach_exp) = delta_rho_tach_exp/pvecback[pba->index_bg_rho_tach_exp];
+    }
+
+
+
     /* delta_dr */
     if (ppt->has_source_delta_dr == _TRUE_) {
       f_dr = pow(a2_rel/pba->H0,2)*pvecback[pba->index_bg_rho_dr];
@@ -7594,6 +7841,37 @@ int perturb_sources(
       _set_source_(ppt->index_tp_theta_scf) = rho_plus_p_theta_scf/(pvecback[pba->index_bg_rho_scf]+pvecback[pba->index_bg_p_scf])
         + theta_shift; // N-body gauge correction
     }
+/* theta_tach_insq */
+if (ppt->has_source_theta_tach_insq == _TRUE_) {
+
+      rho_plus_p_theta_tach_insq = 1./3.*
+        k*k/a2_rel*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2_rel);
+
+
+	
+
+      _set_source_(ppt->index_tp_theta_tach_insq) = rho_plus_p_theta_tach_insq/(pvecback[pba->index_bg_rho_tach_insq]+pvecback[pba->index_bg_p_tach_insq])
+        + theta_shift; // N-body gauge correction
+    }
+
+/* theta_tach_exp */
+ if (ppt->has_source_theta_tach_exp == _TRUE_) {
+
+      rho_plus_p_theta_tach_exp = 1./3.*
+        k*k/a2_rel*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2_rel);
+
+
+	
+
+      _set_source_(ppt->index_tp_theta_tach_exp) = rho_plus_p_theta_tach_exp/(pvecback[pba->index_bg_rho_tach_exp]+pvecback[pba->index_bg_p_tach_exp])
+        + theta_shift; // N-body gauge correction
+    }
+
+
+
+
 
     /* theta_dr */
     if (ppt->has_source_theta_dr == _TRUE_) {
@@ -7730,6 +8008,11 @@ int perturb_print_variables(double tau,
   double delta_idr=0., theta_idr=0., shear_idr=0.;
   double delta_rho_scf=0., rho_plus_p_theta_scf=0.;
   double delta_scf=0., theta_scf=0.;
+  double delta_rho_tach_insq=0., rho_plus_p_theta_tach_insq=0.;
+  double delta_tach_insq=0., theta_tach_insq=0.;
+  double delta_rho_tach_exp=0., rho_plus_p_theta_tach_exp=0.;
+  double delta_tach_exp=0., theta_tach_exp=0.;
+
   /** - ncdm sector begins */
   int n_ncdm;
   double *delta_ncdm=NULL, *theta_ncdm=NULL, *shear_ncdm=NULL, *delta_p_over_delta_rho_ncdm=NULL;
@@ -8022,6 +8305,58 @@ int perturb_print_variables(double tau,
 
     }
 
+
+    if (pba->has_tach_insq == _TRUE_){
+      if (ppt->gauge == synchronous){
+        delta_rho_tach_insq =  1./3.*
+          ((1./a2)*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		pow((1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2),1.5)
+           + ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]/
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2));
+      }
+      else{
+        delta_rho_tach_insq =  1./3.*
+          (1./a2*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_prime_tach_insq]
+           + ppw->pvecback[pba->index_bg_dV_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]
+           - 1./a2*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_insq],2)*ppw->pvecmetric[ppw->index_mt_psi]);
+      }
+
+      rho_plus_p_theta_tach_insq = 1./3.*
+        k*k/a2*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*y[ppw->pv->index_pt_phi_tach_insq]*ppw->pvecback[pba->index_bg_V_tach_insq]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_insq]*ppw->pvecback[pba->index_bg_phi_prime_tach_insq]/a2);
+
+      delta_tach_insq = delta_rho_tach_insq/pvecback[pba->index_bg_rho_tach_insq];
+      theta_tach_insq = rho_plus_p_theta_tach_insq/(pvecback[pba->index_bg_rho_tach_insq]+pvecback[pba->index_bg_p_tach_insq]);
+
+    }
+
+
+    if (pba->has_tach_exp == _TRUE_){
+      if (ppt->gauge == synchronous){
+        delta_rho_tach_exp =  1./3.*
+          ((1./a2)*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		pow((1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2),1.5)
+           + ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]/
+				sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2));
+      }
+      else{
+        delta_rho_tach_exp =  1./3.*
+          (1./a2*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_prime_tach_exp]
+           + ppw->pvecback[pba->index_bg_dV_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]
+           - 1./a2*pow(ppw->pvecback[pba->index_bg_phi_prime_tach_exp],2)*ppw->pvecmetric[ppw->index_mt_psi]);
+      }
+
+      rho_plus_p_theta_tach_exp = 1./3.*
+        k*k/a2*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*y[ppw->pv->index_pt_phi_tach_exp]*ppw->pvecback[pba->index_bg_V_tach_exp]/
+		sqrt(1.0-ppw->pvecback[pba->index_bg_phi_prime_tach_exp]*ppw->pvecback[pba->index_bg_phi_prime_tach_exp]/a2);
+
+      delta_tach_exp = delta_rho_tach_exp/pvecback[pba->index_bg_rho_tach_exp];
+      theta_tach_exp = rho_plus_p_theta_tach_exp/(pvecback[pba->index_bg_rho_tach_exp]+pvecback[pba->index_bg_p_tach_exp]);
+
+    }
+
+
+
     /* converting synchronous variables to newtonian ones */
     if (ppt->gauge == synchronous) {
 
@@ -8074,6 +8409,18 @@ int perturb_print_variables(double tau,
         delta_scf += alpha*(-3.0*H*(1.0+pvecback[pba->index_bg_p_scf]/pvecback[pba->index_bg_rho_scf]));
         theta_scf += k*k*alpha;
       }
+
+      if (pba->has_tach_insq == _TRUE_) {
+        delta_tach_insq += alpha*(-3.0*H*(1.0+pvecback[pba->index_bg_p_tach_insq]/pvecback[pba->index_bg_rho_tach_insq]));
+        theta_tach_insq += k*k*alpha;
+      }
+
+      if (pba->has_tach_exp == _TRUE_) {
+        delta_tach_exp += alpha*(-3.0*H*(1.0+pvecback[pba->index_bg_p_tach_exp]/pvecback[pba->index_bg_rho_tach_exp]));
+        theta_tach_exp += k*k*alpha;
+      }
+
+
 
     }
 
@@ -8144,6 +8491,16 @@ int perturb_print_variables(double tau,
     /* Scalar field scf*/
     class_store_double(dataptr, delta_scf, pba->has_scf, storeidx);
     class_store_double(dataptr, theta_scf, pba->has_scf, storeidx);
+
+    /* Scalar field tach_insq*/
+    class_store_double(dataptr, delta_tach_insq, pba->has_tach_insq, storeidx);
+    class_store_double(dataptr, theta_tach_insq, pba->has_tach_insq, storeidx);
+
+    /* Scalar field tach_exp*/
+    class_store_double(dataptr, delta_tach_exp, pba->has_tach_exp, storeidx);
+    class_store_double(dataptr, theta_tach_exp, pba->has_tach_exp, storeidx);
+
+
     /** Fluid */
     class_store_double(dataptr, ppw->delta_rho_fld, pba->has_fld, storeidx);
     class_store_double(dataptr, ppw->rho_plus_p_theta_fld, pba->has_fld, storeidx);
@@ -8864,6 +9221,60 @@ int perturb_derivs(double tau,
         - (k2 + a2*pvecback[pba->index_bg_ddV_scf])*y[pv->index_pt_phi_scf]; //checked
 
     }
+
+    /** - ---> scalar field (tach_insq) */
+
+    if (pba->has_tach_insq == _TRUE_) {
+
+      /** - ----> field value */
+
+      dy[pv->index_pt_phi_tach_insq] = y[pv->index_pt_phi_prime_tach_insq];
+
+      /** - ----> Klein Gordon equation */
+
+      dy[pv->index_pt_phi_prime_tach_insq] =  (1.0-pvecback[pba->index_bg_phi_prime_tach_insq]*pvecback[pba->index_bg_phi_prime_tach_insq]/a2)*
+						(a2*y[pv->index_pt_phi_tach_insq]*
+						(pow(pvecback[pba->index_bg_dV_tach_insq]/pvecback[pba->index_bg_V_tach_insq],2.0) 
+					-pvecback[pba->index_bg_ddV_tach_insq]/pvecback[pba->index_bg_V_tach_insq]) -k2*y[pv->index_pt_phi_tach_insq] 
+						-metric_continuity*pvecback[pba->index_bg_phi_prime_tach_insq]  )
+
+						+  y[pv->index_pt_phi_prime_tach_insq]*( - 2.*a_prime_over_a 
+				 + 9.0*a_prime_over_a*pvecback[pba->index_bg_phi_prime_tach_insq]*pvecback[pba->index_bg_phi_prime_tach_insq]/a2
+					+2.0*(pvecback[pba->index_bg_dV_tach_insq]/pvecback[pba->index_bg_V_tach_insq])*
+					pvecback[pba->index_bg_phi_prime_tach_insq]*pvecback[pba->index_bg_phi_prime_tach_insq] );
+
+
+
+    }
+
+
+    /** - ---> scalar field (tach_exp) */
+
+    if (pba->has_tach_exp == _TRUE_) {
+
+      /** - ----> field value */
+
+      dy[pv->index_pt_phi_tach_exp] = y[pv->index_pt_phi_prime_tach_exp];
+
+      /** - ----> Klein Gordon equation */
+
+      dy[pv->index_pt_phi_prime_tach_exp] =  (1.0-pvecback[pba->index_bg_phi_prime_tach_exp]*pvecback[pba->index_bg_phi_prime_tach_exp]/a2)*
+						(a2*y[pv->index_pt_phi_tach_exp]*
+						(pow(pvecback[pba->index_bg_dV_tach_exp]/pvecback[pba->index_bg_V_tach_exp],2.0) 
+					-pvecback[pba->index_bg_ddV_tach_exp]/pvecback[pba->index_bg_V_tach_exp]) -k2*y[pv->index_pt_phi_tach_exp] 
+						-metric_continuity*pvecback[pba->index_bg_phi_prime_tach_exp]  )
+
+						+  y[pv->index_pt_phi_prime_tach_exp]*( - 2.*a_prime_over_a 
+				 + 9.0*a_prime_over_a*pvecback[pba->index_bg_phi_prime_tach_exp]*pvecback[pba->index_bg_phi_prime_tach_exp]/a2
+					+2.0*(pvecback[pba->index_bg_dV_tach_exp]/pvecback[pba->index_bg_V_tach_exp])*
+					pvecback[pba->index_bg_phi_prime_tach_exp]*pvecback[pba->index_bg_phi_prime_tach_exp] );
+
+
+
+    }
+
+
+
     /** - ---> interacting dark radiation */
     if (pba->has_idr == _TRUE_){
 

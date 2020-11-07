@@ -240,6 +240,8 @@ struct perturbs
   short has_source_delta_dcdm;  /**< do we need source for delta of DCDM? */
   short has_source_delta_fld;   /**< do we need source for delta of dark energy? */
   short has_source_delta_scf;   /**< do we need source for delta from scalar field? */
+  short has_source_delta_tach_insq;   /**< do we need source for delta from tach insq scalar field? */
+  short has_source_delta_tach_exp;   /**< do we need source for delta from tach exp scalar field? */
   short has_source_delta_dr;    /**< do we need source for delta of decay radiation? */
   short has_source_delta_ur;    /**< do we need source for delta of ultra-relativistic neutrinos/relics? */
   short has_source_delta_idr;   /**< do we need source for delta of interacting dark radiation? */
@@ -254,6 +256,8 @@ struct perturbs
   short has_source_theta_dcdm;  /**< do we need source for theta of DCDM? */
   short has_source_theta_fld;   /**< do we need source for theta of dark energy? */
   short has_source_theta_scf;   /**< do we need source for theta of scalar field? */
+  short has_source_theta_tach_insq;   /**< do we need source for theta of tach insq scalar field? */
+  short has_source_theta_tach_exp;   /**< do we need source for theta of tach exp scalar field? */
   short has_source_theta_dr;    /**< do we need source for theta of ultra-relativistic neutrinos/relics? */
   short has_source_theta_ur;    /**< do we need source for theta of ultra-relativistic neutrinos/relics? */
   short has_source_theta_idr;   /**< do we need source for theta of interacting dark radiation? */
@@ -287,6 +291,8 @@ struct perturbs
   int index_tp_delta_dcdm;/**< index value for delta of DCDM */
   int index_tp_delta_fld;  /**< index value for delta of dark energy */
   int index_tp_delta_scf;  /**< index value for delta of scalar field */
+  int index_tp_delta_tach_insq;  /**< index value for delta of tach insq scalar field */
+  int index_tp_delta_tach_exp;  /**< index value for delta of tach exp scalar field */
   int index_tp_delta_dr; /**< index value for delta of decay radiation */
   int index_tp_delta_ur; /**< index value for delta of ultra-relativistic neutrinos/relics */
   int index_tp_delta_idr; /**< index value for delta of interacting dark radiation */
@@ -304,6 +310,8 @@ struct perturbs
   int index_tp_theta_dcdm;  /**< index value for theta of DCDM */
   int index_tp_theta_fld;   /**< index value for theta of dark energy */
   int index_tp_theta_scf;   /**< index value for theta of scalar field */
+  int index_tp_theta_tach_insq;   /**< index value for theta of tach insq scalar field */
+  int index_tp_theta_tach_exp;   /**< index value for theta of tach exp scalar field */
   int index_tp_theta_ur;    /**< index value for theta of ultra-relativistic neutrinos/relics */
   int index_tp_theta_idr;   /**< index value for theta of interacting dark radiation */
   int index_tp_theta_idm_dr;/**< index value for theta of interacting dark matter (with dr)*/
@@ -470,6 +478,10 @@ struct perturb_vector
   int index_pt_Gamma_fld;  /**< unique dark energy dynamical variable in PPF case */
   int index_pt_phi_scf;  /**< scalar field density */
   int index_pt_phi_prime_scf;  /**< scalar field velocity */
+  int index_pt_phi_tach_insq;  /**< scalar field density */
+  int index_pt_phi_prime_tach_insq;  /**< scalar field velocity */
+  int index_pt_phi_tach_exp;  /**< scalar field density */
+  int index_pt_phi_prime_tach_exp;  /**< scalar field velocity */
   int index_pt_delta_ur; /**< density of ultra-relativistic neutrinos/relics */
   int index_pt_theta_ur; /**< velocity of ultra-relativistic neutrinos/relics */
   int index_pt_shear_ur; /**< shear of ultra-relativistic neutrinos/relics */
