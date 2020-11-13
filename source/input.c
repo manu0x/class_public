@@ -569,6 +569,7 @@ int input_init(
   }
 fprintf(stdout,"ini tach_insq field is %lf\n",pba->phi_ini_tach_insq);
 fprintf(stdout,"ini tach_exp field is %lf\n",pba->phi_ini_tach_exp);
+fprintf(stdout,"shooting index is  %d\n",pba->tach_exp_tuning_index);
   return _SUCCESS_;
 
 }
@@ -3309,7 +3310,7 @@ int input_default_params(
   
   pba->tach_exp_parameters = NULL;
   pba->tach_exp_parameters_size = 0;
-  pba->tach_exp_tuning_index = 2;
+  pba->tach_exp_tuning_index = 0;
   //MZ: initial conditions are as multiplicative factors of the radiation attractor values
   pba->phi_ini_tach_exp = 1.0;
   pba->phi_prime_ini_tach_exp = 0.0;

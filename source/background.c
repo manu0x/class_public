@@ -2842,7 +2842,7 @@ double ddV_tach_insq(struct background *pba,double phi)
 
 double V_tach_exp(struct background *pba,double phi) 
 {
-  double Va  = pba->tach_exp_parameters[0];
+  double Va  = pba->tach_exp_parameters[0]*3.0*pba->H0*pba->H0;
   double phia  = pba->tach_exp_parameters[1];
  
 
@@ -2852,7 +2852,7 @@ double V_tach_exp(struct background *pba,double phi)
 
 double dV_tach_exp(struct background *pba,double phi) 
 {
-   double Va  = pba->tach_exp_parameters[0];
+   double Va  = pba->tach_exp_parameters[0]*3.0*pba->H0*pba->H0;
   double phia  = pba->tach_exp_parameters[1];
  
 
@@ -2866,12 +2866,12 @@ double dV_tach_exp(struct background *pba,double phi)
 
 double ddV_tach_exp(struct background *pba,double phi) 
 {
-  double Va  = pba->tach_exp_parameters[0];
+  double Va  = pba->tach_exp_parameters[0]*3.0*pba->H0*pba->H0;
   double phia  = pba->tach_exp_parameters[1];
  
 
 
-  return  -Va*exp(-phi/phia)/(phia*phia);
+  return  Va*exp(-phi/phia)/(phia*phia);
 }
 
 /**
