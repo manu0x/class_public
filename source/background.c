@@ -1900,6 +1900,14 @@ int background_solve(
     pba->Omega0_dr = pvecback_integration[pba->index_bi_rho_dr]/pba->H0/pba->H0;
   }
 
+  if (pba->has_tach_exp == _TRUE_){
+	pba->phi0_tach_exp = pvecback_integration[pba->index_bi_phi_tach_exp];
+  }
+
+   if (pba->has_tach_insq == _TRUE_){
+	pba->phi0_tach_insq = pvecback_integration[pba->index_bi_phi_tach_insq];
+  }
+
   /** - allocate background tables */
   class_alloc(pba->tau_table,pba->bt_size * sizeof(double),pba->error_message);
 

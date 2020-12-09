@@ -1672,6 +1672,10 @@ cdef class Class:
                 value = self.ba.Omega0_lambda
             elif name == 'Omega0_fld':
                 value = self.ba.Omega0_fld
+            elif name == 'phi0_tach_exp':
+                value = self.ba.phi0_tach_exp
+            elif name == 'phi0_tach_insq':
+                value = self.ba.phi0_tach_insq
             elif name == 'age':
                 value = self.ba.age
             elif name == 'conformal_age':
