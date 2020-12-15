@@ -1902,10 +1902,12 @@ int background_solve(
 
   if (pba->has_tach_exp == _TRUE_){
 	pba->phi0_tach_exp = pvecback_integration[pba->index_bi_phi_tach_exp];
+        pba->phi0_prime_tach_exp = pvecback_integration[pba->index_bi_phi_prime_tach_exp];
   }
 
    if (pba->has_tach_insq == _TRUE_){
 	pba->phi0_tach_insq = pvecback_integration[pba->index_bi_phi_tach_insq];
+        pba->phi0_prime_tach_insq = pvecback_integration[pba->index_bi_phi_prime_tach_insq];
   }
 
   /** - allocate background tables */

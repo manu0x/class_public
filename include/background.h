@@ -110,6 +110,7 @@ struct background
   short attractor_ic_tach_insq;   /**< whether the scalar field has attractor initial conditions */
   double phi_ini_tach_insq;       /**< \f$ \phi(t_0) \f$: scalar field initial value */
   double phi0_tach_insq;	  /** Final value of tachyon (with inverse square potential)field	*/
+  double phi0_prime_tach_insq;     /** Final value of tachyon (with inverse square potential)field velocity	*/
   double phi_prime_ini_tach_insq; /**< \f$ d\phi(t_0)/d\tau \f$: scalar field initial derivative wrt conformal time */
   double * tach_insq_parameters;  /**< list of parameters describing the scalar field potential */
   int tach_insq_parameters_size;  /**< size of tach_insq_parameters */
@@ -120,6 +121,7 @@ struct background
   short attractor_ic_tach_exp;   /**< whether the scalar field has attractor initial conditions */
   double phi_ini_tach_exp;       /**< \f$ \phi(t_0) \f$: scalar field initial value */
   double phi0_tach_exp;	  /** Final value of tachyon (with exp(-phi/phi_a) potential)field	*/
+  double phi0_prime_tach_exp;	  /** Final value of tachyon (with exp(-phi/phi_a) potential)field velocity	*/
   double phi_prime_ini_tach_exp; /**< \f$ d\phi(t_0)/d\tau \f$: scalar field initial derivative wrt conformal time */
   double * tach_exp_parameters;  /**< list of parameters describing the scalar field potential */
   int tach_exp_parameters_size;  /**< size of tach_exp_parameters */

@@ -88,6 +88,8 @@ cdef extern from "class.h":
         double Omega0_tach_insq
         double phi0_tach_exp
         double phi0_tach_insq
+        double phi0_prime_tach_exp
+        double phi0_prime_tach_insq
         double Omega0_k
         int bt_size
         double Omega0_m
